@@ -72,14 +72,16 @@ async function getContactById(contactId) {
 
 async function removeContact(contactId) {
   const contacts = await readContacts(contactsPath);
-  const contactById = contacts.filter(({ id }) => id !== contactId);
+  const actualContacts = contacts.filter(({ id }) => +id !== +contactId);
 
-  if (!contactById) {
+  if (contacts.length === actualContacts.length) {
     console.log(`Contact with id: ${contactId} is not found!`);
     return;
   }
-  console.log(`Contact removed!`);
-  console.table(contactById);
+
+  writeContacts(contactsPath, actualContacts);
+  console.log(`Contact with id: ${contactId} removed successfull.`);
+  console.table(actualContacts);
 }
 
 // ==============
@@ -99,11 +101,11 @@ async function addContact(name, email, phone) {
     id: uuidv4(),
   };
   const contacts = await readContacts(contactsPath);
-  const data = [...contacts, newContact];
-  writeContacts(contactsPath, data);
+  const listWithNewContact = [...contacts, newContact];
+  writeContacts(contactsPath, listWithNewContact);
 
   console.log("You add new contact");
-  console.table(contacts);
+  console.table(listWithNewContact);
 }
 
 module.exports = {
